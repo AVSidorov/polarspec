@@ -1,0 +1,3 @@
+[submodule "stripack"]
+	path = stripack
+	url = git@github.com:AVSidorov/stripack.git

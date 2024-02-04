@@ -11,6 +11,7 @@
 #include <QToolBar>
 #include <QToolButton>
 
+
 namespace
 {
     class ToolButton : public QToolButton
@@ -28,6 +29,8 @@ namespace
     {
       public:
         MainWindow( QWidget* = NULL );
+    private:
+
     };
 }
 

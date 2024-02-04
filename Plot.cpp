@@ -5,6 +5,7 @@
 
 #include "Plot.h"
 
+#include <cmath>
 #include <QwtRasterData>
 #include <QwtPolarPanner>
 #include <QwtPolarMagnifier>
@@ -19,6 +20,11 @@
 #include <QFileDialog>
 #include <QPen>
 #include <QLocale>
+#include "Point.h"
+#include "InterpolatorCollection.h"
+
+
+#define AN 10
 
 namespace
 {
@@ -49,22 +55,35 @@ namespace
     class SpectrogramData : public QwtRasterData
     {
       public:
-        SpectrogramData()
+        SpectrogramData(): m_collection(std::make_shared<InterpolatorCollection>())
         {
-            m_interval[Qt::ZAxis].setInterval( 0.0, 10.0 );
+            m_interval[Qt::ZAxis].setInterval( 0.0, AN==0 ? 1.0 : 2.0 );
+            m_collection->addPoint(Point(0,0, 1, 1));
+            for(int z = 1; z<=90; z++){
+                for(int a = 0; a<360; a++){
+                    auto zenith = static_cast<double>(z)/180*M_PI;
+                    auto azimuth = static_cast<double>(a)/180*M_PI;
+                    auto value = cos(zenith)*(1-sin(AN*azimuth));
+                    m_collection->addPoint(Point(azimuth,zenith, 1., value));
+                }
+            }
+            m_collection->makeTriangulation();
         }
 
         virtual double value( double azimuth, double radius ) const QWT_OVERRIDE
         {
-            const double c = 0.842;
-            const double x = radius / 10.0 * 3.0 - 1.5;
-            const double y = azimuth / ( 2 * M_PI ) * 3.0 - 1.5;
-
-            const double v1 = qwtSqr( x ) + ( y - c ) * ( y + c );
-            const double v2 = 2 * x * ( y + c );
-
-            const double v = 1.0 / ( qwtSqr( v1 ) + qwtSqr( v2 ) );
-            return v;
+//            const double c = 0.842;
+//            const double x = radius / 10.0 * 3.0 - 1.5;
+//            const double y = azimuth / ( 2 * M_PI ) * 3.0 - 1.5;
+//
+//            const double v1 = qwtSqr( x ) + ( y - c ) * ( y + c );
+//            const double v2 = 2 * x * ( y + c );
+//
+//            const double v = 1.0 / ( qwtSqr( v1 ) + qwtSqr( v2 ) );
+//            return v;
+              auto func = m_collection.get();
+              auto value = (*func)(Point(azimuth,radius));
+            return value;
         }
 
         virtual QwtInterval interval( Qt::Axis axis ) const QWT_OVERRIDE
@@ -74,6 +93,7 @@ namespace
 
       private:
         QwtInterval m_interval[3];
+        std::shared_ptr<InterpolatorCollection> m_collection;
     };
 
     class AzimuthScaleDraw : public QwtRoundScaleDraw
@@ -141,7 +161,7 @@ Plot::Plot( QWidget* parent )
     setScale( QwtPolar::Azimuth, 0.0, 2 * M_PI, M_PI_4 );
     setScaleMaxMinor( QwtPolar::Azimuth, 2 );
 
-    setScale( QwtPolar::Radius, 0.0, 10.0 );
+    setScale( QwtPolar::Radius, 0.0, M_PI_2, M_PI_2/10);
     setScaleMaxMinor( QwtPolar::Radius, 2 );
 
     // grids
