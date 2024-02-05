@@ -82,7 +82,7 @@ namespace
 //            const double v = 1.0 / ( qwtSqr( v1 ) + qwtSqr( v2 ) );
 //            return v;
               auto func = m_collection.get();
-              auto value = (*func)(Point(azimuth,radius));
+              auto value = (*func)(Point(azimuth/180*M_PI,radius/180*M_PI));
             return value;
         }
 
@@ -101,20 +101,20 @@ namespace
       public:
         virtual QwtText label( double value ) const QWT_OVERRIDE
         {
-            if ( qFuzzyCompare( fmod( value, 2 * M_PI ), 0.0 ) )
+            if ( qFuzzyCompare( fmod( value, 360 ), 0.0 ) )
             {
                 return QString( "0" );
             }
 
-            if ( qFuzzyCompare( fmod( value, M_PI_4 ), 0.0 ) )
+            if ( qFuzzyCompare( fmod( value, 45), 0.0 ) )
             {
                 QString text;
-                if ( !qFuzzyCompare( value, M_PI ) )
+                if ( !qFuzzyCompare( value, 1 ) )
                 {
-                    text += QLocale().toString( value / M_PI );
+                    text += QLocale().toString( value / 1 );
                     text += " ";
                 }
-                text += "<FONT face=Symbol size=4>p</FONT>";
+                text += "<FONT face=Arial size=4>&#176;</FONT>";
                 return text;
             }
 
@@ -158,10 +158,12 @@ Plot::Plot( QWidget* parent )
     setPlotBackground( Qt::darkBlue );
 
     // scales
-    setScale( QwtPolar::Azimuth, 0.0, 2 * M_PI, M_PI_4 );
+    //setScale( QwtPolar::Azimuth, 0.0, 2 * M_PI, M_PI_4 );
+    setScale( QwtPolar::Azimuth, 0.0, 360, 45 );
     setScaleMaxMinor( QwtPolar::Azimuth, 2 );
 
-    setScale( QwtPolar::Radius, 0.0, M_PI_2, M_PI_2/10);
+
+    setScale( QwtPolar::Radius, 0.0, 90.0 );
     setScaleMaxMinor( QwtPolar::Radius, 2 );
 
     // grids

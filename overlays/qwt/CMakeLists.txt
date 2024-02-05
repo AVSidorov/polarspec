@@ -4,6 +4,7 @@ project(qwt CXX)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_AUTOMOC ON)
 
+include(GNUInstallDirs)
 
 find_package(Qt5
         COMPONENTS
@@ -52,9 +53,9 @@ list(REMOVE_ITEM QWT_CLASSINCLUDES classincludes/classincludes.pro)
 
 add_library(qwt SHARED)
 
-target_compile_definitions(qwt PUBLIC QWT_MOC_INCLUDE=1)
+target_compile_definitions(qwt PRIVATE QWT_MOC_INCLUDE=1)
 if("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
-    target_compile_definitions(qwt PUBLIC QT_NO_DEBUG QT_NO_KEYWORDS)
+    target_compile_definitions(qwt PRIVATE QT_NO_DEBUG QT_NO_KEYWORDS)
 endif()
 
 if (WIN32)
@@ -73,8 +74,8 @@ target_sources(qwt
 target_include_directories(qwt
         PUBLIC
         $<BUILD_INTERFACE:${qwt_src}>
-        $<INSTALL_INTERFACE:${INCLUDEDIR}>
-        $<INSTALL_INTERFACE:${LIBDIR}>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_LIBDIR}>
 )
 
 target_link_libraries(qwt
@@ -88,13 +89,13 @@ target_link_libraries(qwt
         Qt::PrintSupport
 )
 
-include(GNUInstallDirs)
-
 install(TARGETS qwt
         EXPORT Qwt
         FILE_SET qwt_header_set
         FILE_SET qwt_classincludes_set
-        ARCHIVE DESTINATION ${CMake_install_LIBDIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
 
 install(EXPORT Qwt

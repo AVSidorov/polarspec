@@ -44,7 +44,7 @@ PlotWindow::PlotWindow( QWidget* parent )
     m_colorScale->setAlignment( QwtScaleDraw::RightScale );
     m_colorScale->setColorBarEnabled( true );
 
-    QwtText title( "Intensity" );
+    QwtText title( "Lichtstärke in cd" );
     QFont font = m_colorScale->font();
     font.setBold( true );
     title.setFont( font );

@@ -10,6 +10,7 @@
 #include <QMainWindow>
 #include <QToolBar>
 #include <QToolButton>
+#include <QIcon>
 
 
 namespace
@@ -39,6 +40,8 @@ MainWindow::MainWindow( QWidget* parent )
 {
     PlotWindow* plotWindow = new PlotWindow();
     setCentralWidget( plotWindow );
+    setWindowTitle(QString("robogonio - Lichtstärkeverteilung"));
+    //setWindowIcon(QIcon("opsira_o.ico"));
 
     ToolButton* btnGrid = new ToolButton( "Grid" );
     btnGrid->setCheckable( true );
@@ -68,6 +71,8 @@ MainWindow::MainWindow( QWidget* parent )
 int main( int argc, char* argv[] )
 {
     QApplication app( argc, argv );
+
+    app.setWindowIcon(QIcon("opsira_o.ico"));
 
     MainWindow window;
     window.resize( 700, 600 );

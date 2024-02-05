@@ -18,8 +18,6 @@ vcpkg_install_cmake()
 
 vcpkg_cmake_config_fixup(CONFIG_PATH lib/cmake/Qwt)
 
-set(Qwt_DIR ${CURRENT_PACKAGES_DIR}/debug/share/qwt)
-
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/share")
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
 

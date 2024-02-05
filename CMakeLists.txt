@@ -4,8 +4,8 @@ set(VCPKG_OVERLAY_PORTS ${CMAKE_CURRENT_LIST_DIR}/overlays)
 message("VCPKG_OVERLAY_PORTS ${VCPKG_OVERLAY_PORTS}")
 
 project(polarspectrogram)
-add_subdirectory(stripack/stripack_c)
-add_subdirectory(stripack/stripack_cpp)
+add_subdirectory(stripack/stripack_c ${CMAKE_BINARY_DIR}/stripack_c)
+add_subdirectory(stripack/stripack_cpp ${CMAKE_BINARY_DIR}/stripack_cpp)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -17,6 +17,8 @@ add_executable(${PROJECT_NAME}
         Plot.cpp
         PlotWindow.cpp
 )
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE _USE_MATH_DEFINES)
 
 find_package(Qt5
         COMPONENTS
